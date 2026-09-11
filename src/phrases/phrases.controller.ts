@@ -24,7 +24,7 @@ export class PhrasesController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePhraseDto: UpdatePhraseDto) {
-    return this.phrasesService.update(+id, updatePhraseDto);
+    return this.phrasesService.update(id, updatePhraseDto);
   }
 
   @Delete(':id')

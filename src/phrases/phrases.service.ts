@@ -42,8 +42,22 @@ export class PhrasesService {
     }
   }
 
-  update(id: number, updatePhraseDto: UpdatePhraseDto) {
-    return `This action updates a #${id} phrase`;
+  async update(id: string, updatePhraseDto: UpdatePhraseDto) {
+    try {
+      const phrase = await this.phraseRepository.preload({
+        id: id,
+        ...updatePhraseDto
+      });
+
+      if (!phrase) {
+        throw new NotFoundException(`Phrase with ID ${id} not found`)
+      }
+      
+      await this.phraseRepository.save(phrase);
+      return phrase;
+    } catch (error) {
+      this.handleDBRequests(error);
+    }
   }
 
   async remove(id: string) {
