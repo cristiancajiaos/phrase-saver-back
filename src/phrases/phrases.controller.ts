@@ -29,6 +29,6 @@ export class PhrasesController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.phrasesService.remove(+id);
+    return this.phrasesService.remove(id);
   }
 }

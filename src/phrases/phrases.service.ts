@@ -46,8 +46,12 @@ export class PhrasesService {
     return `This action updates a #${id} phrase`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} phrase`;
+  async remove(id: string) {
+    const phrase = await this.findOne(id);
+    await this.phraseRepository.delete(phrase.id);
+    return {
+      message: 'Phrase deleted'
+    }
   }
 
   handleDBRequests(error) {
