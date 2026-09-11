@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { PhrasesService } from './phrases.service';
 import { CreatePhraseDto } from './dto/create-phrase.dto';
 import { UpdatePhraseDto } from './dto/update-phrase.dto';
@@ -18,8 +18,8 @@ export class PhrasesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.phrasesService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.phrasesService.findOne(id);
   }
 
   @Patch(':id')

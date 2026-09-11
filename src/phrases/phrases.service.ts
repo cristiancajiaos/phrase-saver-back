@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreatePhraseDto } from './dto/create-phrase.dto';
 import { UpdatePhraseDto } from './dto/update-phrase.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Phrase } from './entities/phrase.entity';
 import { Repository } from 'typeorm';
+import { validate as validateUUID } from 'uuid';
 
 @Injectable()
 export class PhrasesService {
@@ -24,11 +25,21 @@ export class PhrasesService {
   }
 
   findAll() {
-    return `This action returns all phrases`;
+    return this.phraseRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} phrase`;
+  async findOne(id: string) {
+    if (validateUUID(id)) {
+      const phrase = await this.phraseRepository.findOneBy({id: id});
+
+      if (!phrase) {
+        throw new NotFoundException(`Phrase with ID ${id} not found`);
+      }
+
+      return phrase;
+    } else {
+      throw new BadRequestException(`ID given, ${id}, is not a valid ID`);
+    }
   }
 
   update(id: number, updatePhraseDto: UpdatePhraseDto) {
