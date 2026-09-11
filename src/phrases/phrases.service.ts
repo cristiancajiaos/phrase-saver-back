@@ -1,10 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreatePhraseDto } from './dto/create-phrase.dto';
 import { UpdatePhraseDto } from './dto/update-phrase.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Phrase } from './entities/phrase.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PhrasesService {
-  create(createPhraseDto: CreatePhraseDto) {
+
+  constructor(
+    @InjectRepository(Phrase)
+    private readonly phraseRepository: Repository<Phrase>
+  ) {}
+  async create(createPhraseDto: CreatePhraseDto) {
+    try {
+      const phrase = await this.phraseRepository.create(createPhraseDto);
+      const phraseDB = this.phraseRepository.save(phrase);
+      return phraseDB;
+    } catch (error) {
+      this.handleDBRequests(error);
+    }
     return 'This action adds a new phrase';
   }
 
@@ -22,5 +37,13 @@ export class PhrasesService {
 
   remove(id: number) {
     return `This action removes a #${id} phrase`;
+  }
+
+  handleDBRequests(error) {
+    if (error.code == '23505') {
+      throw new BadRequestException(error.detail);
+    }
+
+    throw new InternalServerErrorException(error.detail);
   }
 }
