@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PhrasesModule } from './phrases/phrases.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { PhrasesModule } from './phrases/phrases.module';
       autoLoadEntities: true,
       synchronize: true 
     }),
-    PhrasesModule
+    PhrasesModule,
+    SeedModule
   ],
   controllers: [AppController],
   providers: [AppService],

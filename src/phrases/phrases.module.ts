@@ -7,6 +7,7 @@ import { Phrase } from './entities/phrase.entity';
 @Module({
   controllers: [PhrasesController],
   providers: [PhrasesService],
-  imports: [TypeOrmModule.forFeature([Phrase])]
+  imports: [TypeOrmModule.forFeature([Phrase])],
+  exports: [PhrasesService, TypeOrmModule]
 })
 export class PhrasesModule {}
